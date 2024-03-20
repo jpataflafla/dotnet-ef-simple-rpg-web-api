@@ -5,7 +5,7 @@ public class Character
     public int Id { get; set; }
     public string Name { get; set; } = "Adventurer";
 
-    public RpgClass CLass { get; set; } = RpgClass.Fighter;
+    public RpgClass Class { get; set; } = RpgClass.Fighter;
 
     /// <summary>
     /// HP – how much damage a character can take before being incapacitated.

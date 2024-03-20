@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using dotnet_ef_simple_rpg_web_api.Models;
+using dotnet_ef_simple_rpg_web_api.Services.CharacterService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_ef_simple_rpg_web_api.Controllers;
@@ -11,11 +12,28 @@ namespace dotnet_ef_simple_rpg_web_api.Controllers;
 [Route("api/[controller]")]
 public class CharacterController : ControllerBase
 {
-    private static Character fighter = new Character();
+    private readonly ICharacterService _characterService;
 
-    [HttpGet]
-    public ActionResult<Character> Get()
+    public CharacterController(ICharacterService characterService)
     {
-        return Ok(fighter);
+        this._characterService = characterService;
+    }
+
+    [HttpGet("GetAll")]
+    public ActionResult<List<Character>> GetAllCharacters()
+    {
+        return Ok(_characterService.GetAllCharacters());
+    }
+
+    [HttpGet("{id}")]
+    public ActionResult<Character> GetSingleCharacter(int id)
+    {
+        return Ok(_characterService.GetCharacterById(id));
+    }
+
+    [HttpPost]
+    public ActionResult<List<Character>> AddCharacter(Character newCharacter)
+    {
+        return Ok(_characterService.AddCharacter(newCharacter));
     }
 }
