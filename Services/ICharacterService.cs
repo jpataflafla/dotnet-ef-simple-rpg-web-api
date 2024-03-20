@@ -1,12 +1,13 @@
-﻿using dotnet_ef_simple_rpg_web_api.Models;
+﻿using dotnet_ef_simple_rpg_web_api.Dtos.Character;
+using dotnet_ef_simple_rpg_web_api.Models;
 
 namespace dotnet_ef_simple_rpg_web_api.Services.CharacterService;
 
 public interface ICharacterService
 {
-    List<Character> GetAllCharacters();
+    Task<ServiceResponse<List<GetCharacterResponseDto>>> GetAllCharacters();
 
-    Character GetCharacterById(int id);
+    Task<ServiceResponse<GetCharacterResponseDto>> GetCharacterById(int id);
 
-    List<Character> AddCharacter(Character newCharacter);
+    Task<ServiceResponse<List<GetCharacterResponseDto>>> AddCharacter(AddCharacterRequestDto newCharacter);
 }
