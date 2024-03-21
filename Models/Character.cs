@@ -27,4 +27,9 @@ public class Character
     /// Strength (St) affects the damage output of attacks.
     /// </summary>
     public int Strength { get; set; } = 10;
+
+    /// <summary>
+    /// User who owns this character
+    /// </summary>
+    public User? User { get; set; }
 }
