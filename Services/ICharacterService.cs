@@ -5,7 +5,7 @@ namespace dotnet_ef_simple_rpg_web_api.Services.CharacterService;
 
 public interface ICharacterService
 {
-    Task<ServiceResponse<List<GetCharacterResponseDto>>> GetAllCharacters();
+    Task<ServiceResponse<List<GetCharacterResponseDto>>> GetAllCharacters(int userId);
 
     Task<ServiceResponse<GetCharacterResponseDto>> GetCharacterById(int id);
 

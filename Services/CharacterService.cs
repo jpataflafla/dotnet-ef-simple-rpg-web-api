@@ -63,12 +63,12 @@ public class CharacterService : ICharacterService
         return serviceResponse;
     }
 
-    public async Task<ServiceResponse<List<GetCharacterResponseDto>>> GetAllCharacters()
+    public async Task<ServiceResponse<List<GetCharacterResponseDto>>> GetAllCharacters(int userId)
     {
         var serviceResponse = new ServiceResponse<List<GetCharacterResponseDto>>();
         try
         {
-            var dbCharacters = await _dataContext.Characters.ToListAsync();
+            var dbCharacters = await _dataContext.Characters.Where(character => character.User!.Id == userId).ToListAsync();
             serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterResponseDto>(c)).ToList();
         }
         catch (Exception ex)

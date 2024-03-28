@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using dotnet_ef_simple_rpg_web_api.Dtos.Character;
 using dotnet_ef_simple_rpg_web_api.Models;
@@ -22,10 +23,13 @@ public class CharacterController : ControllerBase
         this._characterService = characterService;
     }
 
+    //[AllowAnonymous]
     [HttpGet("GetAll")]
     public async Task<ActionResult<ServiceResponse<List<GetCharacterResponseDto>>>> GetAllCharacters()
     {
-        return Ok(await _characterService.GetAllCharacters());
+        int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)!.Value); // get currently logged user Id
+
+        return Ok(await _characterService.GetAllCharacters(userId));
     }
 
     [HttpGet("{id}")]
