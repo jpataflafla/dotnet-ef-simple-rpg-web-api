@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using dotnet_ef_simple_rpg_web_api.Dtos.Character;
 using dotnet_ef_simple_rpg_web_api.Models;
 using dotnet_ef_simple_rpg_web_api.Services.CharacterService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_ef_simple_rpg_web_api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class CharacterController : ControllerBase

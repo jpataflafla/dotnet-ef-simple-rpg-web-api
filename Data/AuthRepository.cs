@@ -1,15 +1,20 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using dotnet_ef_simple_rpg_web_api.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace dotnet_ef_simple_rpg_web_api.Data;
 
 public class AuthRepository : IAuthRepository
 {
     private readonly DataContext _dataContext;
+    private readonly IConfiguration _configuration;
 
-    public AuthRepository(DataContext dataContext)
+    public AuthRepository(DataContext dataContext, IConfiguration configuration)
     {
         _dataContext = dataContext;
+        _configuration = configuration;
     }
 
     public async Task<ServiceResponse<string>> Login(string username, string password)
@@ -31,7 +36,7 @@ public class AuthRepository : IAuthRepository
         }
         else
         {
-            response.Data = user.Id.ToString();
+            response.Data = CreateToken(user);
         }
 
         return response;
@@ -75,7 +80,8 @@ public class AuthRepository : IAuthRepository
             // Generating a random salt (key) for password hashing
             passwordSalt = hmac.Key;
             // Computing the hash value for the given password using UTF-8 encoding
-            passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            var passwordBytes = System.Text.Encoding.UTF8.GetBytes(password);
+            passwordHash = hmac.ComputeHash(passwordBytes);
         }
     }
 
@@ -83,8 +89,44 @@ public class AuthRepository : IAuthRepository
     {
         using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
         {
-            var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            var passwordBytes = System.Text.Encoding.UTF8.GetBytes(password);
+            var computedHash = hmac.ComputeHash(passwordBytes);
             return computedHash.SequenceEqual(passwordHash);
         }
+    }
+
+    private string CreateToken(User user)
+    {
+        // Create a list of claims containing user information, such as ID and username
+        var claims = new List<Claim>{
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Name, user.Username)
+        };
+
+        // Retrieve the token secret from the application settings, db or some key vault
+        var appSettingsToken = _configuration.GetSection("AppSettings:Token").Value
+                                ?? throw new Exception("AppSettings 'Token' not found or is null.");
+
+        var appSettingsBytes = System.Text.Encoding.UTF8.GetBytes(appSettingsToken);
+
+        // Create a new symmetric security key using the token secret bytes
+        var key = new SymmetricSecurityKey(appSettingsBytes);
+
+        // Create signing credentials using the security key and HMAC-SHA512 signature algorithm
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+        // Create a token descriptor with the specified claims, expiration time, and signing credentials
+        var tokenDescriptor = new SecurityTokenDescriptor()
+        {
+            Subject = new ClaimsIdentity(claims),
+            Expires = DateTime.UtcNow.AddMinutes(90),
+            SigningCredentials = credentials
+        };
+
+        // Create a JWT security token handler
+        var tokenHandler = new JwtSecurityTokenHandler();
+        SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
+
+        return tokenHandler.WriteToken(token); //return token as a string
     }
 }
