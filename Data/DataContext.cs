@@ -11,4 +11,5 @@ public class DataContext : DbContext
 
     public DbSet<Character> Characters => Set<Character>();
     public DbSet<User> Users => Set<User>();
+    public DbSet<Book> Books => Set<Book>();
 }

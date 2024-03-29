@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using dotnet_ef_simple_rpg_web_api.Dtos.Book;
 using dotnet_ef_simple_rpg_web_api.Dtos.Character;
 using dotnet_ef_simple_rpg_web_api.Models;
 
@@ -10,5 +11,6 @@ public class AutoMapperProfile : Profile
     {
         CreateMap<Character, GetCharacterResponseDto>();
         CreateMap<AddCharacterRequestDto, Character>();
+        CreateMap<Book, GetBookDto>();
     }
 }

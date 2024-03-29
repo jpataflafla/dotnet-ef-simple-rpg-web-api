@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using dotnet_ef_simple_rpg_web_api.Data;
+using dotnet_ef_simple_rpg_web_api.Services.BookService;
 using dotnet_ef_simple_rpg_web_api.Services.CharacterService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +32,8 @@ builder.Services.AddSwaggerGen(config =>
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<ICharacterService, CharacterService>();
+builder.Services.AddScoped<IBookService, BookService>();
+
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -46,6 +49,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = false
         };
     });
+
+builder.Services.AddHttpContextAccessor();
+
 
 var app = builder.Build();
 

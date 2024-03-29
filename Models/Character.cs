@@ -32,4 +32,6 @@ public class Character
     /// User who owns this character
     /// </summary>
     public User? User { get; set; }
+
+    public Book? Book { get; set; }
 }

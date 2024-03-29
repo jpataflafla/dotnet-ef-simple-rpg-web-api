@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Security.Claims;
+using AutoMapper;
 using dotnet_ef_simple_rpg_web_api.Data;
 using dotnet_ef_simple_rpg_web_api.Dtos.Character;
 using dotnet_ef_simple_rpg_web_api.Models;
@@ -11,11 +12,13 @@ public class CharacterService : ICharacterService
 {
     private readonly IMapper _mapper;
     private readonly DataContext _dataContext;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public CharacterService(IMapper mapper, DataContext dataContext)
+    public CharacterService(IMapper mapper, DataContext dataContext, IHttpContextAccessor httpContextAccessor)
     {
-        this._mapper = mapper;
-        this._dataContext = dataContext;
+        _mapper = mapper;
+        _dataContext = dataContext;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<ServiceResponse<List<GetCharacterResponseDto>>> AddCharacter(AddCharacterRequestDto newCharacter)
@@ -24,10 +27,16 @@ public class CharacterService : ICharacterService
         try
         {
             var character = _mapper.Map<Character>(newCharacter);
+
+            // assign a character to the currently logged in user
+            character.User = await _dataContext.Users.SingleOrDefaultAsync(user => user.Id == GetUserId());
+
             _dataContext.Characters.Add(character);
             await _dataContext.SaveChangesAsync();
 
-            serviceResponse.Data = await _dataContext.Characters.Select(c => _mapper.Map<GetCharacterResponseDto>(c)).ToListAsync();
+            serviceResponse.Data = await _dataContext.Characters
+                .Where(character => character.User!.Id == GetUserId())
+                .Select(character => _mapper.Map<GetCharacterResponseDto>(character)).ToListAsync();
         }
         catch (Exception ex)
         {
@@ -44,7 +53,9 @@ public class CharacterService : ICharacterService
 
         try
         {
-            var character = await _dataContext.Characters.SingleOrDefaultAsync(c => c.Id == id);
+            var character = await _dataContext.Characters
+                .SingleOrDefaultAsync(character =>
+                    character.Id == id && character.User!.Id == GetUserId());
             if (character is null)
             {
                 throw new Exception($"Character with Id:{id} was not found, so it cannot be deleted.");
@@ -53,7 +64,9 @@ public class CharacterService : ICharacterService
             _dataContext.Characters.Remove(character);
             await _dataContext.SaveChangesAsync();
 
-            serviceResponse.Data = await _dataContext.Characters.Select(c => _mapper.Map<GetCharacterResponseDto>(c)).ToListAsync();
+            serviceResponse.Data = await _dataContext.Characters
+                .Where(character => character.User!.Id == GetUserId())
+                .Select(character => _mapper.Map<GetCharacterResponseDto>(character)).ToListAsync();
         }
         catch (Exception ex)
         {
@@ -63,13 +76,15 @@ public class CharacterService : ICharacterService
         return serviceResponse;
     }
 
-    public async Task<ServiceResponse<List<GetCharacterResponseDto>>> GetAllCharacters(int userId)
+    public async Task<ServiceResponse<List<GetCharacterResponseDto>>> GetAllCharacters()
     {
         var serviceResponse = new ServiceResponse<List<GetCharacterResponseDto>>();
         try
         {
-            var dbCharacters = await _dataContext.Characters.Where(character => character.User!.Id == userId).ToListAsync();
-            serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterResponseDto>(c)).ToList();
+            var dbCharacters = await _dataContext.Characters
+                .Where(character => character.User!.Id == GetUserId()).ToListAsync();
+            serviceResponse.Data = dbCharacters
+                .Select(character => _mapper.Map<GetCharacterResponseDto>(character)).ToList();
         }
         catch (Exception ex)
         {
@@ -86,7 +101,9 @@ public class CharacterService : ICharacterService
 
         try
         {
-            var dbCharacter = await _dataContext.Characters.SingleOrDefaultAsync(c => c.Id == id);
+            var dbCharacter = await _dataContext.Characters
+                .SingleOrDefaultAsync(character =>
+                    character.Id == id && character.User!.Id == GetUserId());
             if (dbCharacter is null)
             {
                 throw new Exception($"Character with Id:{id} was not found.");
@@ -109,7 +126,9 @@ public class CharacterService : ICharacterService
 
         try
         {
-            var character = await _dataContext.Characters.SingleOrDefaultAsync(c => c.Id == updatedCharacter.Id);
+            var character = await _dataContext.Characters
+                .SingleOrDefaultAsync(character =>
+                character.Id == updatedCharacter.Id && character.User!.Id == GetUserId());
             if (character is null)
             {
                 throw new Exception($"Character with Id:{updatedCharacter.Id} not found.");
@@ -131,5 +150,17 @@ public class CharacterService : ICharacterService
             serviceResponse.Message = ex.Message;
         }
         return serviceResponse;
+    }
+
+    private int GetUserId()
+    {
+        var userIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier);
+
+        if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+        {
+            throw new InvalidOperationException("User ID claim is missing or invalid.");
+        }
+
+        return userId;
     }
 }
