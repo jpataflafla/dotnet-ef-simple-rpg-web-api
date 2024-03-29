@@ -34,4 +34,5 @@ public class Character
     public User? User { get; set; }
 
     public Book? Book { get; set; }
+    public List<Skill>? Skills { get; set; }
 }
