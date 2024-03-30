@@ -2,6 +2,8 @@ using System.ComponentModel;
 using dotnet_ef_simple_rpg_web_api.Data;
 using dotnet_ef_simple_rpg_web_api.Services.BookService;
 using dotnet_ef_simple_rpg_web_api.Services.CharacterService;
+using dotnet_ef_simple_rpg_web_api.Services.SkillService;
+using dotnet_ef_simple_rpg_web_api.Services.WeaponService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -33,6 +35,8 @@ builder.Services.AddSwaggerGen(config =>
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<ICharacterService, CharacterService>();
 builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<ISkillService, SkillService>();
+builder.Services.AddScoped<IWeaponService, WeaponService>();
 
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 

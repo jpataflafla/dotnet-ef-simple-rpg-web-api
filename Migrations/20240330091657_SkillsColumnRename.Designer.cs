@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using dotnet_ef_simple_rpg_web_api.Data;
 
@@ -11,9 +12,11 @@ using dotnet_ef_simple_rpg_web_api.Data;
 namespace dotnet_ef_simple_rpg_web_api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240330091657_SkillsColumnRename")]
+    partial class SkillsColumnRename
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -133,50 +136,6 @@ namespace dotnet_ef_simple_rpg_web_api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Skills");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Complexity = 90,
-                            Name = "Healing"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Complexity = 70,
-                            Name = "Law"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Complexity = 40,
-                            Name = "Poetry"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Complexity = 22,
-                            Name = "Swimming"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Complexity = 15,
-                            Name = "Dancing"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Complexity = 99,
-                            Name = "Teleportation"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Complexity = 80,
-                            Name = "Herbalism"
-                        });
                 });
 
             modelBuilder.Entity("dotnet_ef_simple_rpg_web_api.Models.User", b =>
@@ -222,50 +181,6 @@ namespace dotnet_ef_simple_rpg_web_api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Weapons");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Damage = 30,
-                            Name = "Hammer"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Damage = 40,
-                            Name = "Axe"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Damage = 40,
-                            Name = "Bow"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Damage = 42,
-                            Name = "Crossbow"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Damage = 55,
-                            Name = "Wand"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Damage = 30,
-                            Name = "Whip"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Damage = 10,
-                            Name = "Hot Potato"
-                        });
                 });
 
             modelBuilder.Entity("CharacterSkill", b =>
