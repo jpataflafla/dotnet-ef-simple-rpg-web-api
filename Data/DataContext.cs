@@ -13,4 +13,5 @@ public class DataContext : DbContext
     public DbSet<User> Users => Set<User>();
     public DbSet<Book> Books => Set<Book>();
     public DbSet<Skill> Skills => Set<Skill>();
+    public DbSet<Weapon> Weapons => Set<Weapon>();
 }

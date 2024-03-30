@@ -35,4 +35,5 @@ public class Character
 
     public Book? Book { get; set; }
     public List<Skill>? Skills { get; set; }
+    public List<Weapon>? Weapons { get; set; }
 }
