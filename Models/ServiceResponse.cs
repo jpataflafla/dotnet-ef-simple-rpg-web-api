@@ -1,4 +1,4 @@
-﻿namespace dotnet_ef_simple_rpg_web_api;
+﻿namespace dotnet_ef_simple_rpg_web_api.Models;
 
 public class ServiceResponse<T>
 {

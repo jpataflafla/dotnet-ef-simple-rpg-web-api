@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using dotnet_ef_simple_rpg_web_api.Dtos.Character;
 using dotnet_ef_simple_rpg_web_api.Models;
 using dotnet_ef_simple_rpg_web_api.Services.CharacterService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_ef_simple_rpg_web_api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class CharacterController : ControllerBase
@@ -20,6 +23,7 @@ public class CharacterController : ControllerBase
         this._characterService = characterService;
     }
 
+    //[AllowAnonymous]
     [HttpGet("GetAll")]
     public async Task<ActionResult<ServiceResponse<List<GetCharacterResponseDto>>>> GetAllCharacters()
     {
@@ -58,5 +62,19 @@ public class CharacterController : ControllerBase
             return NotFound(response);
         }
         return Ok(response);
+    }
+
+    [HttpPost("Skill")]
+    public async Task<ActionResult<ServiceResponse<AddCharacterRequestDto>>> AddCharacterSkill(
+        AddCharacterSkillDto newCharacterSkill)
+    {
+        return Ok(await _characterService.AddCharacterSkill(newCharacterSkill));
+    }
+
+    [HttpPost("Weapon")]
+    public async Task<ActionResult<ServiceResponse<AddCharacterRequestDto>>> AddCharacterWeapon(
+        AddCharacterWeaponDto newCharacterWeapon)
+    {
+        return Ok(await _characterService.AddCharacterWeapon(newCharacterWeapon));
     }
 }
