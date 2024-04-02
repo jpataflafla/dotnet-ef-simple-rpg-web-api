@@ -7,5 +7,5 @@ public interface ISkillService
 {
     Task<ServiceResponse<List<GetSkillWithIdDto>>> GetAllSkills();
 
-    //Task<ServiceResponse<List<GetSkillDto>>> AddSkill(AddSkillDto newSkill);
+    //Task<ServiceResponse<List<GetSkillWithIdDto>>> AddSkill(AddSkillDto newSkill);
 }
