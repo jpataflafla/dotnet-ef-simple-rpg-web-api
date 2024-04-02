@@ -21,9 +21,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(config =>
 {
-    config.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    config.AddSecurityDefinition("OAuth2.0", new OpenApiSecurityScheme
     {
-        Description = """Standard Authorization header using the Bearer scheme. Example: "bearer {token}" """,
+        Description = """To authorize, log in using the API and use the JWT from the response here, entering the value in the field below, as in the example: "bearer {token}" """,
         In = ParameterLocation.Header,
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey
