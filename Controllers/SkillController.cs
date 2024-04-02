@@ -20,7 +20,7 @@ public class SkillController : ControllerBase
 
     [AllowAnonymous]
     [HttpGet("AllAvailable")]
-    public async Task<ActionResult<ServiceResponse<GetSkillDto>>> GetAllSkills()
+    public async Task<ActionResult<ServiceResponse<GetSkillWithIdDto>>> GetAllSkills()
     {
         return Ok(await _skillService.GetAllSkills());
     }

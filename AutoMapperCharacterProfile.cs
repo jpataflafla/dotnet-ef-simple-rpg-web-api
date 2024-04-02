@@ -15,6 +15,8 @@ public class AutoMapperProfile : Profile
         CreateMap<AddCharacterRequestDto, Character>();
         CreateMap<Book, GetBookDto>();
         CreateMap<Skill, GetSkillDto>();
+        CreateMap<Skill, GetSkillWithIdDto>();
         CreateMap<Weapon, GetWeaponDto>();
+        CreateMap<Weapon, GetWeaponWithIdDto>();
     }
 }

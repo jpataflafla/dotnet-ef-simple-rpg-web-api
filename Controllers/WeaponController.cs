@@ -20,7 +20,7 @@ public class WeaponController : ControllerBase
 
     [AllowAnonymous]
     [HttpGet("AllAvailable")]
-    public async Task<ActionResult<ServiceResponse<GetWeaponDto>>> GetAllSkills()
+    public async Task<ActionResult<ServiceResponse<GetWeaponWithIdDto>>> GetAllSkills()
     {
         return Ok(await _weaponService.GetAllWeapons());
     }
