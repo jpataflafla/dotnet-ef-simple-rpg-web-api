@@ -14,7 +14,10 @@ public class GetCharacterResponseDto
     public int Intelligence { get; set; } = 10;
     public int Defense { get; set; } = 10;
     public int Strength { get; set; } = 10;
-    public GetBookDto? Book { get; set; }
-    public List<GetSkillDto>? Skills { get; set; }
-    public List<GetWeaponDto>? Weapons { get; set; }
+    public GetBookResponseDto? Book { get; set; }
+    public List<GetSkillResponseDto>? Skills { get; set; }
+    public List<GetWeaponResponseDto>? Weapons { get; set; }
+    public int Fights { get; set; }
+    public int Victories { get; set; }
+    public int Defeats { get; set; }
 }

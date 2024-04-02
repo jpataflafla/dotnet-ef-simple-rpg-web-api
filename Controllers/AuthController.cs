@@ -17,7 +17,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("Register")]
-    public async Task<ActionResult<ServiceResponse<int>>> Register(UserRegisterDto request)
+    public async Task<ActionResult<ServiceResponse<int>>> Register(UserRegisterRequestDto request)
     {
         // To add/set additional elements such as user email etc.
         // add the necessary elements to UserRegisterDto
@@ -34,7 +34,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("Login")]
-    public async Task<ActionResult<ServiceResponse<int>>> Login(UserRegisterDto request)
+    public async Task<ActionResult<ServiceResponse<int>>> Login(UserRegisterRequestDto request)
     {
         var response = await _authRepository.Login(
             request.Username,

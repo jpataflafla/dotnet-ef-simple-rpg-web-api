@@ -5,7 +5,7 @@ namespace dotnet_ef_simple_rpg_web_api.Services.SkillService;
 
 public interface ISkillService
 {
-    Task<ServiceResponse<List<GetSkillWithIdDto>>> GetAllSkills();
+    Task<ServiceResponse<List<GetSkillWithIdResponseDto>>> GetAllSkills();
 
-    //Task<ServiceResponse<List<GetSkillWithIdDto>>> AddSkill(AddSkillDto newSkill);
+    //Task<ServiceResponse<List<GetSkillWithIdResponseDto>>> AddSkill(AddSkillDto newSkill);
 }

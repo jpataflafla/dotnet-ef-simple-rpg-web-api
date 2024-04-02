@@ -13,10 +13,10 @@ public class AutoMapperProfile : Profile
     {
         CreateMap<Character, GetCharacterResponseDto>();
         CreateMap<AddCharacterRequestDto, Character>();
-        CreateMap<Book, GetBookDto>();
-        CreateMap<Skill, GetSkillDto>();
-        CreateMap<Skill, GetSkillWithIdDto>();
-        CreateMap<Weapon, GetWeaponDto>();
-        CreateMap<Weapon, GetWeaponWithIdDto>();
+        CreateMap<Book, GetBookResponseDto>();
+        CreateMap<Skill, GetSkillResponseDto>();
+        CreateMap<Skill, GetSkillWithIdResponseDto>();
+        CreateMap<Weapon, GetWeaponResponseDto>();
+        CreateMap<Weapon, GetWeaponWithIdResponseDto>();
     }
 }

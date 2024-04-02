@@ -6,7 +6,7 @@ namespace dotnet_ef_simple_rpg_web_api.Services.BookService;
 
 public interface IBookService
 {
-    Task<ServiceResponse<GetCharacterResponseDto>> AddBook(AddBookDto newBook);
+    Task<ServiceResponse<GetCharacterResponseDto>> AddBook(AddBookRequestDto newBook);
 
 
 }

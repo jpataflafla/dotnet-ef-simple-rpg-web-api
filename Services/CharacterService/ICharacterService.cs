@@ -9,12 +9,19 @@ public interface ICharacterService
 
     Task<ServiceResponse<GetCharacterResponseDto>> GetCharacterById(int id);
 
-    Task<ServiceResponse<List<GetCharacterResponseDto>>> AddCharacter(AddCharacterRequestDto newCharacter);
+    Task<Character> GetRawCharacterById(int id);
 
-    Task<ServiceResponse<GetCharacterResponseDto>> UpdateCharacter(UpdateCharacterRequestDto updatedCharacter);
+    Task<ServiceResponse<List<GetCharacterResponseDto>>> AddCharacter
+    (AddCharacterRequestDto newCharacter);
+
+    Task<ServiceResponse<GetCharacterResponseDto>> UpdateCharacter
+    (UpdateCharacterRequestDto updatedCharacter);
 
     Task<ServiceResponse<List<GetCharacterResponseDto>>> DeleteCharacter(int id);
-    Task<ServiceResponse<GetCharacterResponseDto>> AddCharacterSkill(AddCharacterSkillDto newCharacterSkill);
+    Task<ServiceResponse<GetCharacterResponseDto>> AddCharacterSkill
+    (AddCharacterSkillRequestDto newCharacterSkill);
 
-    Task<ServiceResponse<GetCharacterResponseDto>> AddCharacterWeapon(AddCharacterWeaponDto newCharacterWeapon);
+    Task<ServiceResponse<GetCharacterResponseDto>> AddCharacterWeapon
+    (AddCharacterWeaponRequestDto newCharacterWeapon);
+    int GetUserId();
 }

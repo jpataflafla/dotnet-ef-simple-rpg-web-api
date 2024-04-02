@@ -20,7 +20,7 @@ public class BookController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<ServiceResponse<GetCharacterResponseDto>>> AddBook(AddBookDto newBook)
+    public async Task<ActionResult<ServiceResponse<GetCharacterResponseDto>>> AddBook(AddBookRequestDto newBook)
     {
         return Ok(await _bookService.AddBook(newBook));
     }

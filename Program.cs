@@ -2,6 +2,7 @@ using System.ComponentModel;
 using dotnet_ef_simple_rpg_web_api.Data;
 using dotnet_ef_simple_rpg_web_api.Services.BookService;
 using dotnet_ef_simple_rpg_web_api.Services.CharacterService;
+using dotnet_ef_simple_rpg_web_api.Services.FightService;
 using dotnet_ef_simple_rpg_web_api.Services.SkillService;
 using dotnet_ef_simple_rpg_web_api.Services.WeaponService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -23,7 +24,7 @@ builder.Services.AddSwaggerGen(config =>
 {
     config.AddSecurityDefinition("OAuth2.0", new OpenApiSecurityScheme
     {
-        Description = """To authorize, log in using the API and use the JWT from the response here, entering the value in the field below, as in the example: "bearer {token}" """,
+        Description = """Standard Authorization header using the Bearer scheme. To authorize, log in using the API and use the JWT from the response here, entering the value in the field below, as in the example: "bearer {token}" """,
         In = ParameterLocation.Header,
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey
@@ -55,6 +56,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<IFightService, FightService>();
 
 
 var app = builder.Build();

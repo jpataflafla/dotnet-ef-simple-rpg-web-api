@@ -104,17 +104,7 @@ public class CharacterService : ICharacterService
 
         try
         {
-            var dbCharacter = await _dataContext.Characters
-                .Include(character => character.Book)
-                .Include(character => character.Weapons)
-                .Include(character => character.Skills)
-                .SingleOrDefaultAsync(character =>
-                    character.Id == id && character.User!.Id == GetUserId());
-            if (dbCharacter is null)
-            {
-                throw new Exception($"Character with Id:{id} was not found.");
-            }
-
+            var dbCharacter = await GetRawCharacterById(id);
             serviceResponse.Data = _mapper.Map<GetCharacterResponseDto>(dbCharacter);
         }
         catch (Exception ex)
@@ -124,6 +114,22 @@ public class CharacterService : ICharacterService
         }
 
         return serviceResponse;
+    }
+
+    public async Task<Character> GetRawCharacterById(int id)
+    {
+        var dbCharacter = await _dataContext.Characters
+            .Include(character => character.Book)
+            .Include(character => character.Weapons)
+            .Include(character => character.Skills)
+            .SingleOrDefaultAsync(character =>
+                character.Id == id && character.User!.Id == GetUserId());
+        if (dbCharacter is null)
+        {
+            throw new Exception($"Character with Id:{id} was not found.");
+        }
+
+        return dbCharacter;
     }
 
     public async Task<ServiceResponse<GetCharacterResponseDto>> UpdateCharacter(UpdateCharacterRequestDto updatedCharacter)
@@ -159,7 +165,8 @@ public class CharacterService : ICharacterService
     }
 
 
-    public async Task<ServiceResponse<GetCharacterResponseDto>> AddCharacterSkill(AddCharacterSkillDto newCharacterSkill)
+    public async Task<ServiceResponse<GetCharacterResponseDto>> AddCharacterSkill
+    (AddCharacterSkillRequestDto newCharacterSkill)
     {
         var response = new ServiceResponse<GetCharacterResponseDto>();
         try
@@ -196,7 +203,8 @@ public class CharacterService : ICharacterService
         return response;
     }
 
-    public async Task<ServiceResponse<GetCharacterResponseDto>> AddCharacterWeapon(AddCharacterWeaponDto newCharacterWeapon)
+    public async Task<ServiceResponse<GetCharacterResponseDto>> AddCharacterWeapon
+    (AddCharacterWeaponRequestDto newCharacterWeapon)
     {
         var response = new ServiceResponse<GetCharacterResponseDto>();
         try
@@ -234,7 +242,7 @@ public class CharacterService : ICharacterService
     }
 
 
-    private int GetUserId()
+    public int GetUserId()
     {
         var userIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier);
 

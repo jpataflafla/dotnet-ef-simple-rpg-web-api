@@ -19,13 +19,13 @@ public class WeaponService : IWeaponService
         _mapper = mapper;
     }
 
-    public async Task<ServiceResponse<List<GetWeaponWithIdDto>>> GetAllWeapons()
+    public async Task<ServiceResponse<List<GetWeaponWithIdResponseDto>>> GetAllWeapons()
     {
-        var response = new ServiceResponse<List<GetWeaponWithIdDto>>();
+        var response = new ServiceResponse<List<GetWeaponWithIdResponseDto>>();
         try
         {
             var weapons = await _dataContext.Weapons
-                .Select(weapon => _mapper.Map<GetWeaponWithIdDto>(weapon)).ToListAsync();
+                .Select(weapon => _mapper.Map<GetWeaponWithIdResponseDto>(weapon)).ToListAsync();
 
             if (weapons is null)
             {

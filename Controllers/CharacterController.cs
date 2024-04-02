@@ -66,14 +66,14 @@ public class CharacterController : ControllerBase
 
     [HttpPost("Skill")]
     public async Task<ActionResult<ServiceResponse<AddCharacterRequestDto>>> AddCharacterSkill(
-        AddCharacterSkillDto newCharacterSkill)
+        AddCharacterSkillRequestDto newCharacterSkill)
     {
         return Ok(await _characterService.AddCharacterSkill(newCharacterSkill));
     }
 
     [HttpPost("Weapon")]
     public async Task<ActionResult<ServiceResponse<AddCharacterRequestDto>>> AddCharacterWeapon(
-        AddCharacterWeaponDto newCharacterWeapon)
+        AddCharacterWeaponRequestDto newCharacterWeapon)
     {
         return Ok(await _characterService.AddCharacterWeapon(newCharacterWeapon));
     }

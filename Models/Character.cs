@@ -34,6 +34,12 @@ public class Character
     public User? User { get; set; }
 
     public Book? Book { get; set; }
+
     public List<Skill>? Skills { get; set; }
+
     public List<Weapon>? Weapons { get; set; }
+
+    public int Fights { get; set; }
+    public int Victories { get; set; }
+    public int Defeats { get; set; }
 }

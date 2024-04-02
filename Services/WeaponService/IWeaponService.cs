@@ -5,7 +5,7 @@ namespace dotnet_ef_simple_rpg_web_api.Services.WeaponService;
 
 public interface IWeaponService
 {
-    Task<ServiceResponse<List<GetWeaponWithIdDto>>> GetAllWeapons();
+    Task<ServiceResponse<List<GetWeaponWithIdResponseDto>>> GetAllWeapons();
 
-    //Task<ServiceResponse<List<GetWeaponWithIdDto>>> AddWeapon(AddWeaponDto newWeapon);
+    //Task<ServiceResponse<List<GetWeaponWithIdResponseDto>>> AddWeapon(AddWeaponDto newWeapon);
 }

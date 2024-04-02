@@ -21,7 +21,7 @@ public class BookService : IBookService
         _mapper = mapper;
     }
 
-    public async Task<ServiceResponse<GetCharacterResponseDto>> AddBook(AddBookDto newBook)
+    public async Task<ServiceResponse<GetCharacterResponseDto>> AddBook(AddBookRequestDto newBook)
     {
         var response = new ServiceResponse<GetCharacterResponseDto>();
         try

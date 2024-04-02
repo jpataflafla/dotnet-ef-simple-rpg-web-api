@@ -19,13 +19,13 @@ public class SkillService : ISkillService
         _mapper = mapper;
     }
 
-    public async Task<ServiceResponse<List<GetSkillWithIdDto>>> GetAllSkills()
+    public async Task<ServiceResponse<List<GetSkillWithIdResponseDto>>> GetAllSkills()
     {
-        var response = new ServiceResponse<List<GetSkillWithIdDto>>();
+        var response = new ServiceResponse<List<GetSkillWithIdResponseDto>>();
         try
         {
             var skills = await _dataContext.Skills
-                .Select(skill => _mapper.Map<GetSkillWithIdDto>(skill)).ToListAsync();
+                .Select(skill => _mapper.Map<GetSkillWithIdResponseDto>(skill)).ToListAsync();
 
             if (skills is null)
             {
