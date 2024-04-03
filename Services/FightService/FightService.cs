@@ -23,9 +23,9 @@ public class FightService : IFightService
         _random = new Random();
     }
 
-    public async Task<ServiceResponse<AttackResultResponseDto>> WeaponAttack(WeaponAttackRequestDto weaponAttackRequestDto)
+    public async Task<ServiceResponse<WeaponAttackResultResponseDto>> WeaponAttack(WeaponAttackRequestDto weaponAttackRequestDto)
     {
-        var response = new ServiceResponse<AttackResultResponseDto>();
+        var response = new ServiceResponse<WeaponAttackResultResponseDto>();
         try
         {
             var attacker = await GetAttackerAsync(weaponAttackRequestDto.AttackerId);
@@ -38,7 +38,7 @@ public class FightService : IFightService
 
             await _dataContext.SaveChangesAsync();
 
-            response.Data = new AttackResultResponseDto()
+            response.Data = new WeaponAttackResultResponseDto()
             {
                 AttackerName = attacker.Name,
                 OpponentName = opponent.Name,

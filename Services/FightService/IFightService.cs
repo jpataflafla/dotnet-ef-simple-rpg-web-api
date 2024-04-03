@@ -5,6 +5,6 @@ namespace dotnet_ef_simple_rpg_web_api.Services.FightService;
 
 public interface IFightService
 {
-    Task<ServiceResponse<AttackResultResponseDto>> WeaponAttack
+    Task<ServiceResponse<WeaponAttackResultResponseDto>> WeaponAttack
 (WeaponAttackRequestDto weaponAttackRequestDto);
 }
