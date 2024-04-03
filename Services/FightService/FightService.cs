@@ -12,6 +12,8 @@ public class FightService : IFightService
     private static readonly float MinStrengthFactor = 0.5f;
     private static readonly float MinDefenseFactor = 0.5f;
     private static readonly float StrengthRelevanceFactor = 0.6f; // more than 1 makes no sense
+    private static readonly float MinIntelligenceFactor = 0.8f;
+    private static readonly float SkillComplexityRelevanceFactor = 0.8f;
     private DataContext _dataContext;
     private readonly ICharacterService _characterService;
     private readonly Random _random;
@@ -32,7 +34,7 @@ public class FightService : IFightService
             var attackerWeapon = GetAttackerWeapon(attacker, weaponAttackRequestDto.AttackerWeaponId);
             var opponent = await GetOpponentAsync(weaponAttackRequestDto.OpponentId);
 
-            int damage = CalculateDamage(attacker, attackerWeapon, opponent);
+            int damage = CalculateWeaponAttackDamage(attacker, attackerWeapon, opponent);
 
             response.Message = ApplyDamage(attacker, opponent, damage);
 
@@ -55,12 +57,48 @@ public class FightService : IFightService
         return response;
     }
 
+    public async Task<ServiceResponse<SkillAttackResultResponseDto>> SkillAttack
+        (SkillAttackRequestDto skillAttackRequestDto)
+    {
+        var response = new ServiceResponse<SkillAttackResultResponseDto>();
+        try
+        {
+            var attacker = await GetAttackerAsync(skillAttackRequestDto.AttackerId);
+            var attackerSkill = GetAttackerSkill(
+                attacker, skillAttackRequestDto.AttackerSkillId);
+            var opponent = await GetOpponentAsync(skillAttackRequestDto.OpponentId);
+
+            int damage = CalculateSkillAttackDamage(attacker, attackerSkill, opponent);
+
+            response.Message = ApplyDamage(attacker, opponent, damage);
+
+            await _dataContext.SaveChangesAsync();
+
+            response.Data = new SkillAttackResultResponseDto()
+            {
+                AttackerName = attacker.Name,
+                OpponentName = opponent.Name,
+                AttackerHP = attacker.HitPoints,
+                OpponentHP = opponent.HitPoints,
+                Damage = damage
+            };
+        }
+        catch (Exception ex)
+        {
+            response.Success = false;
+            response.Message = ex.Message;
+        }
+        return response;
+    }
+
+
     private async Task<Character> GetAttackerAsync(int attackerId)
     {
         // Character Service implementation should return attacker instance
-        // at least with a list of Weapons. Example:
+        // at least with a list of Weapons and Skills (or just full character data). Example:
         // var attacker = await _dataContext.Characters
         //     .Include(character => character.Weapons)
+        //     .Include(character => character.Skills)
         //     .SingleOrDefaultAsync(character => character.Id == attackerId) ??
         //     throw new Exception(
         //          $"Attacker with Id: {attackerId} not found.");
@@ -88,6 +126,20 @@ public class FightService : IFightService
         return attackerWeapon;
     }
 
+    private Skill GetAttackerSkill(Character attacker, int attackerSkillId)
+    {
+        if (attacker.Skills is null || attacker.Skills.Count == 0)
+        {
+            throw new Exception(
+                $"Attacker (Name: {attacker.Name} Id: {attacker.Id}) has no skills.");
+        }
+
+        var attackerSkill = attacker.Skills.Find(weapon => weapon.Id == attackerSkillId) ??
+             throw new Exception($"Skill with Id: {attackerSkillId} not found.");
+
+        return attackerSkill;
+    }
+
     private async Task<Character> GetOpponentAsync(int opponentId)
     {
         var opponent = await _dataContext.Characters
@@ -99,6 +151,9 @@ public class FightService : IFightService
 
     private string ApplyDamage(Character attacker, Character opponent, int damage)
     {
+        // do not apply damage < 0
+        damage = Math.Max(0, damage);
+
         if (damage > 0)
         {
             opponent.HitPoints -= damage;
@@ -114,7 +169,16 @@ public class FightService : IFightService
         return $"The opponent {opponent.Name} lost {damage} points after an attack by {attacker.Name}.";
     }
 
-    private int CalculateDamage(Character attacker, Weapon attackerWeapon, Character opponent)
+    /// <summary>
+    /// This is a very simple example of damage calculation logic - in the case of a real RPG game,
+    /// complex logic can be created where the result depends on the type of weapon 
+    /// and what things and skills the opponent has.
+    /// </summary>
+    /// <param name="attacker"></param>
+    /// <param name="attackerWeapon"></param>
+    /// <param name="opponent"></param>
+    /// <returns></returns>
+    private int CalculateWeaponAttackDamage(Character attacker, Weapon attackerWeapon, Character opponent)
     {
         int opponentDefense =
             (int)(_random.NextDouble() * (opponent.Defense * (1 - MinDefenseFactor)) +
@@ -129,4 +193,36 @@ public class FightService : IFightService
 
         return damage - opponentDefense;
     }
+
+    /// <summary>
+    /// This is a very simple example of damage calculation logic - in the case of a real RPG game,
+    /// complex logic can be created where the result depends on the type of skill 
+    /// and what things and skills the opponent has
+    /// </summary>
+    /// <param name="attacker"></param>
+    /// <param name="attackerSkill"></param>
+    /// <param name="opponent"></param>
+    /// <returns></returns>
+    private int CalculateSkillAttackDamage(Character attacker, Skill attackerSkill, Character opponent)
+    {
+        double defenseFactor = _random.NextDouble() * (1 - MinDefenseFactor) + MinDefenseFactor;
+        int opponentDefense = (int)(opponent.Defense * defenseFactor);
+
+        double strengthFactor = _random.NextDouble() * (1 - MinStrengthFactor) + MinStrengthFactor;
+        int attackerStrength = (int)(attacker.Strength * strengthFactor);
+
+        double intelligenceFactor = _random.NextDouble() * (1 - MinIntelligenceFactor) +
+            MinIntelligenceFactor;
+        int attackerIntelligence = (int)(attacker.Intelligence * intelligenceFactor);
+        int opponentIntelligence = (int)(opponent.Intelligence * intelligenceFactor);
+        int intelligencePoints =
+            Math.Clamp(attackerIntelligence - opponentIntelligence, 0, attackerIntelligence);
+
+        int damage = (int)(attackerSkill.Complexity * SkillComplexityRelevanceFactor) +
+            intelligencePoints +
+            (int)(attackerStrength * StrengthRelevanceFactor);
+
+        return damage - opponentDefense;
+    }
+
 }
