@@ -22,7 +22,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(config =>
 {
-    config.AddSecurityDefinition("OAuth2.0", new OpenApiSecurityScheme
+    config.AddSecurityDefinition(name: "oauth2", securityScheme: new OpenApiSecurityScheme
     {
         Description = """Standard Authorization header using the Bearer scheme. To authorize, log in using the API and use the JWT from the response here, entering the value in the field below, as in the example: "bearer {token}" """,
         In = ParameterLocation.Header,
@@ -33,11 +33,14 @@ builder.Services.AddSwaggerGen(config =>
     config.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 
+
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<ICharacterService, CharacterService>();
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<ISkillService, SkillService>();
 builder.Services.AddScoped<IWeaponService, WeaponService>();
+builder.Services.AddScoped<IFightService, FightService>();
+
 
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 
@@ -56,8 +59,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddHttpContextAccessor();
-
-builder.Services.AddScoped<IFightService, FightService>();
 
 
 var app = builder.Build();
