@@ -33,4 +33,11 @@ public class FightController : ControllerBase
     {
         return Ok(await _fightService.SkillAttack(skillAttackRequestDto));
     }
+
+    [HttpPost("AutomaticFight")]
+    public async Task<ActionResult<ServiceResponse<FightResultResponseDto>>> AutomaticFight
+    (FightRequestDto fightRequestDto)
+    {
+        return Ok(await _fightService.AutomaticFight(fightRequestDto));
+    }
 }

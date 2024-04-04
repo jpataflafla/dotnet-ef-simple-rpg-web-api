@@ -10,4 +10,7 @@ public interface IFightService
 
     Task<ServiceResponse<SkillAttackResultResponseDto>> SkillAttack
         (SkillAttackRequestDto skillAttackRequestDto);
+
+    Task<ServiceResponse<FightResultResponseDto>> AutomaticFight
+        (FightRequestDto fightRequestDto);
 }

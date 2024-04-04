@@ -9,6 +9,7 @@ namespace dotnet_ef_simple_rpg_web_api.Services.FightService;
 
 public class FightService : IFightService
 {
+    private static readonly int DefaultHitPoints = 100;
     private static readonly float MinStrengthFactor = 0.5f;
     private static readonly float MinDefenseFactor = 0.5f;
     private static readonly float StrengthRelevanceFactor = 0.6f; // more than 1 makes no sense
@@ -91,6 +92,39 @@ public class FightService : IFightService
         return response;
     }
 
+    public async Task<ServiceResponse<FightResultResponseDto>> AutomaticFight
+        (FightRequestDto fightRequestDto)
+    {
+        var response = new ServiceResponse<FightResultResponseDto>()
+        {
+            Data = new FightResultResponseDto()
+        };
+        try
+        {
+            var charactersInvolved = await _dataContext.Characters
+                .Include(character => character.Weapons)
+                .Include(character => character.Skills)
+                .Where(character => fightRequestDto.CharacterIds.Contains(character.Id))
+                .ToListAsync();
+
+            if (charactersInvolved is null || charactersInvolved.Count == 0)
+            {
+                throw new Exception("No characters with given Ids found.");
+            }
+
+            ConductAFightBetweenCharacters(response.Data.FightLog, charactersInvolved);
+
+            ResetHitPointsAndCountFight(charactersInvolved);
+
+            await _dataContext.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            response.Success = false;
+            response.Message = ex.Message;
+        }
+        return response;
+    }
 
     private async Task<Character> GetAttackerAsync(int attackerId)
     {
@@ -161,12 +195,15 @@ public class FightService : IFightService
 
         if (opponent.HitPoints <= 0)
         {
+            attacker.Victories++;
             opponent.Defeats++;
-            return $"The attacker {attacker.Name} defeated the opponent {opponent.Name}.";
+            return $"The attacker {attacker.Name} (Id: {attacker.Id}) defeated "
+                + $"the opponent {opponent.Name}  (Id: {opponent.Id}).";
 
         }
 
-        return $"The opponent {opponent.Name} lost {damage} points after an attack by {attacker.Name}.";
+        return $"The opponent {opponent.Name} (Id: {opponent.Id}) lost {damage} points "
+            + $"after an attack by {attacker.Name} (Id: {attacker.Id}).";
     }
 
     /// <summary>
@@ -225,4 +262,82 @@ public class FightService : IFightService
         return damage - opponentDefense;
     }
 
+    #region AutomaticFightExampleLogic
+
+    private void ConductAFightBetweenCharacters(List<string> log, List<Character> charactersInvolved)
+    {
+        bool oneCharacterDefeated = false;
+        var random = new Random();
+
+        while (!oneCharacterDefeated)
+        {
+            foreach (var attacker in charactersInvolved)
+            {
+                var opponents = charactersInvolved
+                                .Where(character => character.Id != attacker.Id).ToList();
+
+                var randomOpponent = opponents[random.Next(opponents.Count)];
+
+                AttackOpponentDuringFight(attacker, randomOpponent, log, random);
+
+                // simple logic to end the death match
+                if (randomOpponent.HitPoints <= 0)
+                {
+                    log.Add($"Character {randomOpponent.Name} (Id: {randomOpponent.Id}) has been defeated.");
+                    log.Add($"End of the fight. Character {attacker.Name}"
+                        + $" (Id: {attacker.Id}) has won and has {attacker.HitPoints} HP left.");
+
+                    oneCharacterDefeated = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    private void AttackOpponentDuringFight(Character attacker, Character opponent, List<string> log, Random random)
+    {
+        var damage = 0;
+        var attackName = string.Empty;
+
+        var useSkill = random.NextDouble() >= 0.5d; // attack with weapon or skill?
+
+        if (useSkill && attacker.Skills is not null && attacker.Skills.Count > 0)
+        {
+            var skill = attacker.Skills[random.Next(attacker.Skills.Count)];
+            attackName = skill.Name;
+            damage = CalculateSkillAttackDamage(attacker, skill, opponent);
+        }
+        else if (!useSkill && attacker.Weapons is not null && attacker.Weapons.Count > 0)
+        {
+            var weapon = attacker.Weapons[random.Next(attacker.Weapons.Count)];
+            attackName = weapon.Name;
+            damage = CalculateWeaponAttackDamage(attacker, weapon, opponent);
+        }
+        else
+        {
+            log.Add($"Character: {attacker.Name} (Id: {attacker.Id})"
+            + " was unable to attack anyone because he has no weapons or skills.");
+            return;
+        }
+
+        var attackLog = ApplyDamage(attacker, opponent, damage);
+        log.Add($"Attack using: {attackName} with damage: {damage} - " + attackLog);
+    }
+
+    /// <summary>
+    /// restart characters hit points
+    /// next death mach can have different result (some things are randomized 
+    /// and characters can collect more skills and items between fights)
+    /// </summary>
+    /// <param name="characters"></param>
+    private void ResetHitPointsAndCountFight(List<Character> characters)
+    {
+        characters.ForEach(character =>
+        {
+            character.Fights++;
+            character.HitPoints = DefaultHitPoints;
+        });
+    }
+
+    #endregion AutomaticFightExampleLogic
 }

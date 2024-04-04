@@ -26,7 +26,7 @@ builder.Services.AddSwaggerGen(config =>
     {
         Description = """Standard Authorization header using the Bearer scheme. To authorize, log in using the API and use the JWT from the response here, entering the value in the field below, as in the example: "bearer {token}" """,
         In = ParameterLocation.Header,
-        Name = "Authorizationy
+        Name = "Authorization"
     });
 
     config.OperationFilter<SecurityRequirementsOperationFilter>();
