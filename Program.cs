@@ -26,13 +26,11 @@ builder.Services.AddSwaggerGen(config =>
     {
         Description = """Standard Authorization header using the Bearer scheme. To authorize, log in using the API and use the JWT from the response here, entering the value in the field below, as in the example: "bearer {token}" """,
         In = ParameterLocation.Header,
-        Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey
+        Name = "Authorizationy
     });
 
     config.OperationFilter<SecurityRequirementsOperationFilter>();
 });
-
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<ICharacterService, CharacterService>();
@@ -40,7 +38,6 @@ builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<ISkillService, SkillService>();
 builder.Services.AddScoped<IWeaponService, WeaponService>();
 builder.Services.AddScoped<IFightService, FightService>();
-
 
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 
