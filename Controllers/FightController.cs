@@ -40,4 +40,11 @@ public class FightController : ControllerBase
     {
         return Ok(await _fightService.AutomaticFight(fightRequestDto));
     }
+
+    [AllowAnonymous]
+    [HttpGet("HighScore")]
+    public async Task<ActionResult<ServiceResponse<List<GetHighScoreResponseDto>>>> GetHighScore()
+    {
+        return Ok(await _fightService.GetHighScore());
+    }
 }

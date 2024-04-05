@@ -1,3 +1,4 @@
+using AutoMapper;
 using dotnet_ef_simple_rpg_web_api.Data;
 using dotnet_ef_simple_rpg_web_api.Dtos.Character;
 using dotnet_ef_simple_rpg_web_api.Dtos.Fight;
@@ -15,12 +16,14 @@ public class FightService : IFightService
     private static readonly float StrengthRelevanceFactor = 0.6f; // more than 1 makes no sense
     private static readonly float MinIntelligenceFactor = 0.8f;
     private static readonly float SkillComplexityRelevanceFactor = 0.8f;
+    private IMapper _mapper;
     private DataContext _dataContext;
     private readonly ICharacterService _characterService;
     private readonly Random _random;
 
-    public FightService(DataContext dataContext, ICharacterService characterService)
+    public FightService(IMapper mapper, DataContext dataContext, ICharacterService characterService)
     {
+        _mapper = mapper;
         _dataContext = dataContext;
         _characterService = characterService;
         _random = new Random();
@@ -117,6 +120,31 @@ public class FightService : IFightService
             ResetHitPointsAndCountFight(charactersInvolved);
 
             await _dataContext.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            response.Success = false;
+            response.Message = ex.Message;
+        }
+        return response;
+    }
+
+    public async Task<ServiceResponse<List<GetHighScoreResponseDto>>> GetHighScore()
+    {
+        var response = new ServiceResponse<List<GetHighScoreResponseDto>>();
+
+        try
+        {
+            var characters = await _dataContext.Characters
+                .Where(character => character.Fights > 0)
+                .OrderByDescending(character => character.Victories)
+                .ThenBy(character => character.Defeats)
+                .ThenByDescending(character => character.Fights)
+                .ThenByDescending(character => character.HitPoints)
+                .ToListAsync();
+
+            response.Data = characters.Select(character =>
+                _mapper.Map<GetHighScoreResponseDto>(character)).ToList();
         }
         catch (Exception ex)
         {

@@ -13,4 +13,6 @@ public interface IFightService
 
     Task<ServiceResponse<FightResultResponseDto>> AutomaticFight
         (FightRequestDto fightRequestDto);
+
+    Task<ServiceResponse<List<GetHighScoreResponseDto>>> GetHighScore();
 }
