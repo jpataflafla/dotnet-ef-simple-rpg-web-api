@@ -81,11 +81,17 @@ public class CharacterService : ICharacterService
         var serviceResponse = new ServiceResponse<List<GetCharacterResponseDto>>();
         try
         {
-            var dbCharacters = await _dataContext.Characters
+            IQueryable<Character> query = _dataContext.Characters
                 .Include(character => character.Book)
                 .Include(character => character.Weapons)
-                .Include(character => character.Skills)
-                .Where(character => character.User!.Id == GetUserId()).ToListAsync();
+                .Include(character => character.Skills);
+
+            if (!IsUserAdmin())
+            {
+                // For non-admin users, filter characters by user ID
+                query = query.Where(character => character.User!.Id == GetUserId());
+            }
+            var dbCharacters = await query.ToListAsync();
             serviceResponse.Data = dbCharacters
                 .Select(character => _mapper.Map<GetCharacterResponseDto>(character)).ToList();
         }
@@ -253,4 +259,18 @@ public class CharacterService : ICharacterService
 
         return userId;
     }
+
+    public string GetUserRole()
+    {
+        var userRole = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Role);
+
+        if (string.IsNullOrEmpty(userRole))
+        {
+            throw new InvalidOperationException("User Role claim is missing or invalid.");
+        }
+
+        return userRole;
+    }
+
+    public bool IsUserAdmin() => GetUserRole() != "Admin";
 }

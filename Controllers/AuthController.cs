@@ -1,6 +1,7 @@
 using dotnet_ef_simple_rpg_web_api.Data;
 using dotnet_ef_simple_rpg_web_api.Dtos.User;
 using dotnet_ef_simple_rpg_web_api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_ef_simple_rpg_web_api.Controllers;

@@ -100,7 +100,8 @@ public class AuthRepository : IAuthRepository
         // Create a list of claims containing user information, such as ID and username
         var claims = new List<Claim>{
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Username)
+            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.Role, user.Role)
         };
 
         // Retrieve the token secret from the application settings, db or some key vault

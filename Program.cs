@@ -4,6 +4,7 @@ using dotnet_ef_simple_rpg_web_api.Services.BookService;
 using dotnet_ef_simple_rpg_web_api.Services.CharacterService;
 using dotnet_ef_simple_rpg_web_api.Services.FightService;
 using dotnet_ef_simple_rpg_web_api.Services.SkillService;
+using dotnet_ef_simple_rpg_web_api.Services.UserService;
 using dotnet_ef_simple_rpg_web_api.Services.WeaponService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +39,7 @@ builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<ISkillService, SkillService>();
 builder.Services.AddScoped<IWeaponService, WeaponService>();
 builder.Services.AddScoped<IFightService, FightService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 
