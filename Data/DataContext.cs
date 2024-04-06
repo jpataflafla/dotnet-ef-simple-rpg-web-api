@@ -38,6 +38,7 @@ public class DataContext : DbContext
         );
 
         // set default user.Role to "Player"
+        // set default user.Role to "Player"
         modelBuilder.Entity<User>()
             .Property(user => user.Role).HasDefaultValue("Player");
 
