@@ -29,7 +29,7 @@ namespace dotnet_ef_simple_rpg_web_api.Migrations
 
                     b.HasIndex("SkillsId");
 
-                    b.ToTable("CharacterSkill");
+                    b.ToTable("CharacterSkill", (string)null);
                 });
 
             modelBuilder.Entity("CharacterWeapon", b =>
@@ -44,7 +44,7 @@ namespace dotnet_ef_simple_rpg_web_api.Migrations
 
                     b.HasIndex("WeaponsId");
 
-                    b.ToTable("CharacterWeapon");
+                    b.ToTable("CharacterWeapon", (string)null);
                 });
 
             modelBuilder.Entity("dotnet_ef_simple_rpg_web_api.Models.Book", b =>
@@ -68,7 +68,7 @@ namespace dotnet_ef_simple_rpg_web_api.Migrations
                     b.HasIndex("CharacterId")
                         .IsUnique();
 
-                    b.ToTable("Books");
+                    b.ToTable("Books", (string)null);
                 });
 
             modelBuilder.Entity("dotnet_ef_simple_rpg_web_api.Models.Character", b =>
@@ -112,7 +112,7 @@ namespace dotnet_ef_simple_rpg_web_api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Characters");
+                    b.ToTable("Characters", (string)null);
                 });
 
             modelBuilder.Entity("dotnet_ef_simple_rpg_web_api.Models.Skill", b =>
@@ -130,7 +130,7 @@ namespace dotnet_ef_simple_rpg_web_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Skills");
+                    b.ToTable("Skills", (string)null);
 
                     b.HasData(
                         new
@@ -203,7 +203,7 @@ namespace dotnet_ef_simple_rpg_web_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("dotnet_ef_simple_rpg_web_api.Models.Weapon", b =>
@@ -221,7 +221,7 @@ namespace dotnet_ef_simple_rpg_web_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Weapons");
+                    b.ToTable("Weapons", (string)null);
 
                     b.HasData(
                         new

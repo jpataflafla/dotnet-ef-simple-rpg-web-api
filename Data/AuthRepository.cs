@@ -29,7 +29,7 @@ public class AuthRepository : IAuthRepository
             response.Success = false;
             response.Message = $"User '{username}' not found.";
         }
-        else if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
+        else if (!AuthUtility.VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
         {
             response.Success = false;
             response.Message = "Incorrect password.";
@@ -54,7 +54,7 @@ public class AuthRepository : IAuthRepository
             return response;
         }
 
-        CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
+        AuthUtility.CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
 
         user.PasswordHash = passwordHash;
         user.PasswordSalt = passwordSalt;
@@ -70,29 +70,6 @@ public class AuthRepository : IAuthRepository
     public async Task<bool> UserExists(string username)
     {
         return await _dataContext.Users.AnyAsync(user => user.Username.ToLower() == username.ToLower());
-    }
-
-    private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-    {
-        // Using a cryptographic HMACSHA512 algorithm for hashing
-        using (var hmac = new System.Security.Cryptography.HMACSHA512())
-        {
-            // Generating a random salt (key) for password hashing
-            passwordSalt = hmac.Key;
-            // Computing the hash value for the given password using UTF-8 encoding
-            var passwordBytes = System.Text.Encoding.UTF8.GetBytes(password);
-            passwordHash = hmac.ComputeHash(passwordBytes);
-        }
-    }
-
-    private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
-    {
-        using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
-        {
-            var passwordBytes = System.Text.Encoding.UTF8.GetBytes(password);
-            var computedHash = hmac.ComputeHash(passwordBytes);
-            return computedHash.SequenceEqual(passwordHash);
-        }
     }
 
     private string CreateToken(User user)
