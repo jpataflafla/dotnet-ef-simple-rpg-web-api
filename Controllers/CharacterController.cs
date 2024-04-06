@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_ef_simple_rpg_web_api.Controllers;
 
-[Authorize]
+[Authorize(Roles = "Player,Admin")]
 [ApiController]
 [Route("api/[controller]")]
 public class CharacterController : ControllerBase

@@ -24,4 +24,5 @@ public interface ICharacterService
     Task<ServiceResponse<GetCharacterResponseDto>> AddCharacterWeapon
     (AddCharacterWeaponRequestDto newCharacterWeapon);
     int GetUserId();
+    string GetUserRole();
 }

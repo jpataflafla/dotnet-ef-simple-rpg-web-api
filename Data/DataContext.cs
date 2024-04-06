@@ -5,6 +5,12 @@ namespace dotnet_ef_simple_rpg_web_api.Data;
 
 public class DataContext : DbContext
 {
+    public DbSet<Character> Characters => Set<Character>();
+    public DbSet<User> Users => Set<User>();
+    public DbSet<Book> Books => Set<Book>();
+    public DbSet<Skill> Skills => Set<Skill>();
+    public DbSet<Weapon> Weapons => Set<Weapon>();
+
     public DataContext(DbContextOptions<DataContext> options) : base(options)
     {
     }
@@ -31,11 +37,8 @@ public class DataContext : DbContext
             new Skill { Id = 7, Name = "Herbalism", Complexity = 80 }
         );
 
+        // set default user.Role to "Player" during migration
+        modelBuilder.Entity<User>()
+            .Property(user => user.Role).HasDefaultValue("Player");
     }
-
-    public DbSet<Character> Characters => Set<Character>();
-    public DbSet<User> Users => Set<User>();
-    public DbSet<Book> Books => Set<Book>();
-    public DbSet<Skill> Skills => Set<Skill>();
-    public DbSet<Weapon> Weapons => Set<Weapon>();
 }

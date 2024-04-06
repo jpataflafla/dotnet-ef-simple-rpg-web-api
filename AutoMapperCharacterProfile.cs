@@ -3,6 +3,7 @@ using dotnet_ef_simple_rpg_web_api.Dtos.Book;
 using dotnet_ef_simple_rpg_web_api.Dtos.Character;
 using dotnet_ef_simple_rpg_web_api.Dtos.Fight;
 using dotnet_ef_simple_rpg_web_api.Dtos.Skill;
+using dotnet_ef_simple_rpg_web_api.Dtos.User;
 using dotnet_ef_simple_rpg_web_api.Dtos.Weapon;
 using dotnet_ef_simple_rpg_web_api.Models;
 
@@ -20,5 +21,6 @@ public class AutoMapperProfile : Profile
         CreateMap<Weapon, GetWeaponResponseDto>();
         CreateMap<Weapon, GetWeaponWithIdResponseDto>();
         CreateMap<Character, GetHighScoreResponseDto>();
+        CreateMap<User, GetUserInfoResponseDto>();
     }
 }

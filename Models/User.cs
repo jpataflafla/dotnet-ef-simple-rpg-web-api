@@ -1,4 +1,6 @@
-﻿namespace dotnet_ef_simple_rpg_web_api.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace dotnet_ef_simple_rpg_web_api.Models;
 
 public class User
 {
@@ -7,4 +9,5 @@ public class User
     public byte[] PasswordHash { get; set; } = new byte[0];
     public byte[] PasswordSalt { get; set; } = new byte[0];
     public List<Character>? Characters { get; set; }
+    [Required] public string Role { get; set; } = string.Empty;
 }
