@@ -37,8 +37,64 @@ public class DataContext : DbContext
             new Skill { Id = 7, Name = "Herbalism", Complexity = 80 }
         );
 
-        // set default user.Role to "Player" during migration
+        // set default user.Role to "Player"
         modelBuilder.Entity<User>()
             .Property(user => user.Role).HasDefaultValue("Player");
+
+        // add default test users
+        AuthUtility.CreatePasswordHash("TestUser", out byte[] passwordHash, out byte[] passwordSalt);
+        modelBuilder.Entity<User>().HasData(
+            new User()
+            {
+                Id = 1,
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt,
+                Username = "TestUser1"
+            },
+            new User()
+            {
+                Id = 2,
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt,
+                Username = "TestUser2"
+            }
+        );
+
+        modelBuilder.Entity<Character>().HasData(
+            new Character()
+            {
+                Id = 1,
+                Name = "TestCharacter1",
+                Class = RpgClass.Cleric,
+                HitPoints = 100,
+                Strength = 60,
+                Defense = 60,
+                Intelligence = 90,
+                UserId = 1
+            },
+            new Character()
+            {
+                Id = 2,
+                Name = "TestCharacter2",
+                Class = RpgClass.Rogue,
+                HitPoints = 100,
+                Strength = 50,
+                Defense = 50,
+                Intelligence = 80,
+                UserId = 2
+            },
+            new Character()
+            {
+                Id = 3,
+                Name = "TestCharacter3",
+                Class = RpgClass.Rogue,
+                HitPoints = 100,
+                Strength = 50,
+                Defense = 50,
+                Intelligence = 80,
+                UserId = 2
+            }
+        );
+
     }
 }
