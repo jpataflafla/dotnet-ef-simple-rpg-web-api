@@ -1,6 +1,6 @@
 # .NET 8 Web API with Entity Framework and Microsoft SQL Server, created as a basic sample template for creating simple RPG web APIs.
 
-This project serves as a basic sample template for creating simple RPG (Role-Playing Game) web APIs using .NET 8, Entity Framework, and Microsoft SQL Server. It provides a starting point for building MVPs (Minimum Viable Products) for RPG games, showcasing various functionalities with simple implementations such as user authentication, character management, and combat simulations.
+This project serves as a basic sample template for creating simple RPG (Role-Playing Game) web APIs using .NET 8, Entity Framework, and Microsoft SQL Server. It provides a starting point for building MVPs (Minimum Viable Products) for RPG games, showcasing various functionalities with simple implementations such as user authentication, character management, and combat simulations. This simple API project template was created to speed up the process of creating MVPs for RPGs and similar games and should be treated as a starting project for experimenting or learning.
 
 ## Setup
 
