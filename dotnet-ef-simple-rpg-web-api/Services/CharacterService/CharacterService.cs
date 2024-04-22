@@ -84,7 +84,8 @@ public class CharacterService : ICharacterService
             IQueryable<Character> query = _dataContext.Characters
                 .Include(character => character.Book)
                 .Include(character => character.Weapons)
-                .Include(character => character.Skills);
+                .Include(character => character.Skills)
+                .Include(character => character.User);
 
             if (!IsUserAdmin())
             {
