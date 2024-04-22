@@ -272,5 +272,5 @@ public class CharacterService : ICharacterService
         return userRole;
     }
 
-    public bool IsUserAdmin() => GetUserRole() != "Admin";
+    public bool IsUserAdmin() => GetUserRole() == "Admin";
 }
